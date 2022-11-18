@@ -75,23 +75,45 @@ const routes = [
     url: /^\/posts$/,
     method: "POST",
     async callback(req) {
-      const body = await new Promise((resolve) => {
+      // const body = await new Promise((resolve) => {
+      //   req.setEncoding("utf-8");
+      //   req.on("data", (data) => {
+      //     resolve(JSON.parse(data));
+      //   });
+      // });
+
+      const getDataPm = new Promise((res) => {
         req.setEncoding("utf-8");
         req.on("data", (data) => {
-          resolve(JSON.parse(data));
+          res(JSON.parse(data));
         });
       });
 
-      posts.push({
-        id: body.title.toLowerCase().replace(" ", ""),
-        title: body.title,
-        content: body.content,
+      return getDataPm.then((body) => {
+        console.log(body);
+
+        posts.push({
+          id: body.title.toLowerCase().replace(" ", ""),
+          title: body.title,
+          content: body.content,
+        });
+
+        return {
+          statusCode: 200,
+          body: "create success",
+        };
       });
 
-      return {
-        statusCode: 200,
-        body: "create success",
-      };
+      // posts.push({
+      //   id: body.title.toLowerCase().replace(" ", ""),
+      //   title: body.title,
+      //   content: body.content,
+      // });
+
+      // return {
+      //   statusCode: 200,
+      //   body: "create success",
+      // };
     },
   },
 ];
